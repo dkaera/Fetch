@@ -276,7 +276,12 @@ class SequentialFileDownloaderImpl(private val initialDownload: Download,
                 read = input.read(buffer, 0, bufferSize)
             }
         }
-        outputResourceWrapper?.flush()
+        try {
+            outputResourceWrapper?.flush()
+            outputResourceWrapper?.close()
+        } catch (e: Exception) {
+            logger.e("FileDownloader", e)
+        }
     }
 
     private fun verifyDownloadCompletion(response: Downloader.Response) {
